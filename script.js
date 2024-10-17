@@ -210,7 +210,16 @@ function volverNivel() {
     ejercicioSection.style.display = 'none';
 }
 
-// Función para manejar la tecla Enter en el campo de respuesta
-respuestaInput.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-       verificarR
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("Página Matemáticas ESO cargada correctamente.");
+    
+    const respuestaInput = document.getElementById('respuesta');
+    
+    // Función para manejar la tecla Enter en el campo de respuesta
+    respuestaInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            console.log("Tecla Enter presionada");
+            verificarRespuesta();
+        }
+    });
+});
