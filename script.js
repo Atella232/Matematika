@@ -30,8 +30,8 @@ function generarPregunta() {
     switch(nivelActual) {
         case 1:
             // Nivel 1: Sumas y restas simples como 1 - 4 o -3 + 5
-            a = getRandomInt(-10, 10);
-            b = getRandomInt(-10, 10);
+            a = getRandomInt(-15, 15);
+            b = getRandomInt(-15, 15);
             operacion = Math.random() > 0.5 ? '+' : '-';
             expresion = `${formatNumber(a)} ${operacion} ${formatNumber(b)}`;
             respuestaCorrecta = calcular(a, b, operacion);
@@ -46,7 +46,7 @@ function generarPregunta() {
                 let resultadoTemp = 0;
                 let opAnterior = '';
                 for (let i = 0; i < numOperaciones; i++) {
-                    let num = getRandomInt(-10, 10);
+                    let num = getRandomInt(-15, 15);
                     let op = Math.random() > 0.5 ? '+' : '-';
                     expresion += `${i === 0 ? '' : ' ' + op + ' '} ${formatNumber(num)}`;
                     if (i === 0) {
@@ -58,8 +58,8 @@ function generarPregunta() {
                 respuestaCorrecta = resultadoTemp;
             } else {
                 // Multiplicaciones como 2 · (-3)
-                a = getRandomInt(-10, 10);
-                b = getRandomInt(-10, 10);
+                a = getRandomInt(-15, 15);
+                b = getRandomInt(-15, 15);
                 operacion = '·';
                 expresion = `${formatNumber(a)} ${operacion} ${formatNumber(b)}`;
                 respuestaCorrecta = calcular(a, b, operacion);
@@ -67,9 +67,9 @@ function generarPregunta() {
             break;
         case 3:
             // Nivel 3: Sumas y restas con operaciones dentro de paréntesis como 2 + (3 -5) o 12 - (4 -7)
-            a = getRandomInt(-10, 10);
-            b = getRandomInt(-10, 10);
-            c = getRandomInt(-10, 10);
+            a = getRandomInt(-15, 15);
+            b = getRandomInt(-15, 15);
+            c = getRandomInt(-15, 15);
             operacion = Math.random() > 0.5 ? '+' : '-';
             let operacionInterna = Math.random() > 0.5 ? '+' : '-';
             expresion = `${formatNumber(a)} ${operacion} (${formatNumber(b)} ${operacionInterna} ${formatNumber(c)})`;
@@ -84,7 +84,7 @@ function generarPregunta() {
             expresion = '';
             respuestaCorrecta = 0;
             for (let i = 0; i < numElements; i++) {
-                let num = getRandomInt(-10, 10);
+                let num = getRandomInt(-15, 15);
                 let op = operaciones[getRandomInt(0, operaciones.length -1)];
 
                 // Manejar operaciones con paréntesis aleatorios
@@ -210,16 +210,14 @@ function volverNivel() {
     ejercicioSection.style.display = 'none';
 }
 
+// Función para manejar la tecla Enter en el campo de respuesta
+respuestaInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        verificarRespuesta();
+    }
+});
+
+// Autoenfoque en la caja de respuesta cuando la página se carga
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Página Matemáticas ESO cargada correctamente.");
-    
-    const respuestaInput = document.getElementById('respuesta');
-    
-    // Función para manejar la tecla Enter en el campo de respuesta
-    respuestaInput.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            console.log("Tecla Enter presionada");
-            verificarRespuesta();
-        }
-    });
 });
