@@ -11,20 +11,21 @@ const respuestaInput = document.getElementById('respuesta');
 const resultadoElement = document.getElementById('resultado');
 const historialSelect = document.getElementById('historial-select');
 
+// Función para iniciar el nivel seleccionado
 function iniciarNivel(nivel) {
     nivelActual = nivel;
     nivelSection.style.display = 'none';
-    generarPregunta();
     ejercicioSection.style.display = 'block';
+    generarPregunta();
 }
 
+// Función para generar una nueva pregunta según el nivel
 function generarPregunta() {
-    let a, b, c, d, operacion;
-    let expresion = '';
+    let a, b, c, operacion, expresion = '';
 
     switch(nivelActual) {
         case 1:
-            // Nivel 1: Sumas y restas simples como 1 - 4 o -3 + 5
+            // Nivel 1: Sumas y restas simples como 1 - 4 o (-3) + 5
             a = getRandomInt(-10, 10);
             b = getRandomInt(-10, 10);
             operacion = Math.random() > 0.5 ? '+' : '-';
@@ -47,10 +48,10 @@ function generarPregunta() {
                 }
                 respuestaCorrecta = resultadoTemp;
             } else if (tipoOperacion < 0.75) {
-                // Multiplicaciones como 2 . (-3)
+                // Multiplicaciones como 2 · (-3)
                 a = getRandomInt(-20, 20);
                 b = getRandomInt(-10, 10);
-                operacion = '.';
+                operacion = '·';
                 expresion = `${formatNumber(a)} ${operacion} ${formatNumber(b)}`;
                 respuestaCorrecta = a * b;
             } else {
@@ -65,36 +66,35 @@ function generarPregunta() {
             }
             break;
         case 3:
-            // Nivel 3: Sumas y restas con operaciones dentro de paréntesis como 2 + (3 -5) o 12 - (4 -7)
+            // Nivel 3: Sumas y restas con operaciones dentro de paréntesis como 2 + (3 - 5) o 12 - (4 - 7)
             a = getRandomInt(-50, 50);
             b = getRandomInt(-20, 20);
             c = getRandomInt(-20, 20);
             operacion = Math.random() > 0.5 ? '+' : '-';
-            expresion = `${formatNumber(a)} ${operacion} (${formatNumber(b)} ${Math.random() > 0.5 ? '+' : '-'} ${formatNumber(c)})`;
+            const operacionInterna = Math.random() > 0.5 ? '+' : '-';
+            expresion = `${formatNumber(a)} ${operacion} (${formatNumber(b)} ${operacionInterna} ${formatNumber(c)})`;
             // Calcular la respuesta
-            let temp = calcular(b, c, operacion === '+' ? (Math.random() > 0.5 ? '+' : '-') : (Math.random() > 0.5 ? '+' : '-'));
+            let temp = calcular(b, c, operacionInterna);
             respuestaCorrecta = calcular(a, temp, operacion);
             break;
         case 4:
-            // Nivel 4: Combinación de sumas, restas, multiplicaciones y divisiones
-            // Ejemplo: 2 . (5 -3) + 3 -5 o 3 . 4 - (1 -5)
-            const operaciones = ['+', '-', '.', '÷'];
+            // Nivel 4: Combinación de sumas, restas, multiplicaciones y divisiones con paréntesis
+            const operaciones = ['+', '-', '·', '÷'];
             let numElements = getRandomInt(3, 5);
             expresion = '';
             let resultadoTemp4 = 0;
-            let lastOp = '';
             for (let i = 0; i < numElements; i++) {
                 let num = getRandomInt(-20, 20);
                 let op = operaciones[getRandomInt(0, operaciones.length -1)];
                 // Manejar operaciones con paréntesis aleatorios
                 if (Math.random() < 0.3 && i < numElements -1) { // 30% de probabilidad de añadir paréntesis
                     let num2 = getRandomInt(-10, 10);
-                    let opInner = operaciones[getRandomInt(0, 3)];
+                    let opInner = operaciones[getRandomInt(0, operaciones.length -1)];
                     let parenExp = `(${formatNumber(num2)} ${opInner} ${formatNumber(getRandomInt(-10,10))})`;
                     expresion += `${i === 0 ? '' : ' ' + op + ' '} ${parenExp}`;
                     // Evaluar la expresión usando Function (asegurando seguridad)
                     try {
-                        let evalExpr = expresion.replace(/÷/g, '/').replace(/\./g, '*');
+                        let evalExpr = expresion.replace(/÷/g, '/').replace(/·/g, '*');
                         respuestaCorrecta = Function('"use strict";return (' + evalExpr + ')')();
                     } catch {
                         respuestaCorrecta = 0;
@@ -105,7 +105,7 @@ function generarPregunta() {
             }
             // Evaluar la expresión
             try {
-                let evalExpr = expresion.replace(/÷/g, '/').replace(/\./g, '*');
+                let evalExpr = expresion.replace(/÷/g, '/').replace(/·/g, '*');
                 respuestaCorrecta = Function('"use strict";return (' + evalExpr + ')')();
             } catch {
                 respuestaCorrecta = 0;
@@ -122,8 +122,10 @@ function generarPregunta() {
     // Limpiar respuestas anteriores
     respuestaInput.value = '';
     resultadoElement.innerText = '';
+    respuestaInput.focus(); // Enfocar el campo de respuesta automáticamente
 }
 
+// Función para verificar la respuesta del usuario
 function verificarRespuesta() {
     let respuestaUsuario = parseFloat(respuestaInput.value);
     if (isNaN(respuestaUsuario)) {
@@ -152,6 +154,7 @@ function verificarRespuesta() {
     setTimeout(generarPregunta, 2000);
 }
 
+// Función para actualizar el historial de operaciones
 function actualizarHistorial() {
     // Limitar el historial a las últimas 10 operaciones
     if (historial.length > 10) {
@@ -169,19 +172,19 @@ function actualizarHistorial() {
     });
 }
 
+// Función para formatear números negativos con paréntesis
 function formatNumber(num) {
     return num < 0 ? `(${num})` : num;
 }
 
+// Función para realizar cálculos básicos
 function calcular(a, b, op) {
     switch(op) {
         case '+':
             return a + b;
         case '-':
             return a - b;
-        case '.':
-            return a * b;
-        case '×':
+        case '·':
             return a * b;
         case '÷':
             return a / b;
@@ -190,10 +193,23 @@ function calcular(a, b, op) {
     }
 }
 
+// Función para obtener un número entero aleatorio entre min y max (inclusive)
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Función para volver al inicio
+function volverInicio() {
+    window.location.href = "index.html";
+}
+
+// Función para volver a la selección de nivel
+function volverNivel() {
+    ejercicioSection.style.display = 'none';
+    nivelSection.style.display = 'block';
+}
+
+// Autoenfocar en el campo de respuesta al cargar la página
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Página Matemáticas ESO cargada correctamente.");
 });
