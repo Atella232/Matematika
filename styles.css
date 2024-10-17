@@ -101,11 +101,12 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center; /* Centrar el texto */
 }
 
 #pregunta {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 32px; /* Tamaño de fuente aumentado */
+    margin-bottom: 20px;
 }
 
 /* Estilos para el Historial */
@@ -121,8 +122,21 @@ button:hover {
     border-radius: 5px;
     overflow-y: scroll;
     background-color: #ffffff;
+    resize: none;
 }
 
+/* Estilos para los Botones Adicionales */
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.buttons button {
+    margin: 0 10px;
+}
+
+/* Responsividad */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
