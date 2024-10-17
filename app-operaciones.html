@@ -27,10 +27,14 @@
                     <button onclick="verificarRespuesta()">Enviar</button>
                 </div>
                 <p id="resultado"></p>
+                <div class="buttons">
+                    <button onclick="volverInicio()">Volver al Inicio</button>
+                    <button onclick="volverNivel()">Volver a Seleccionar Nivel</button>
+                </div>
             </section>
             <section id="historial">
                 <h2>Historial de Operaciones</h2>
-                <select id="historial-select" size="10">
+                <select id="historial-select" size="10" disabled>
                     <!-- Las operaciones se añadirán aquí -->
                 </select>
             </section>
@@ -42,3 +46,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
