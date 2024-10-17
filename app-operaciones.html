@@ -11,19 +11,30 @@
         <h1>Operaciones con Números Enteros</h1>
     </header>
     <main>
-        <section id="nivel">
-            <h2>Selecciona el Nivel de Dificultad</h2>
-            <button onclick="iniciarNivel(1)">Nivel 1: Básico</button>
-            <button onclick="iniciarNivel(2)">Nivel 2: Intermedio</button>
-            <button onclick="iniciarNivel(3)">Nivel 3: Avanzado</button>
-        </section>
-        <section id="ejercicio" style="display:none;">
-            <h2>Ejercicio</h2>
-            <p id="pregunta"></p>
-            <input type="number" id="respuesta" placeholder="Tu respuesta">
-            <button onclick="verificarRespuesta()">Enviar</button>
-            <p id="resultado"></p>
-        </section>
+        <div class="container">
+            <section id="nivel">
+                <h2>Selecciona el Nivel de Dificultad</h2>
+                <button onclick="iniciarNivel(1)">Nivel 1: Básico</button>
+                <button onclick="iniciarNivel(2)">Nivel 2: Intermedio</button>
+                <button onclick="iniciarNivel(3)">Nivel 3: Avanzado</button>
+                <button onclick="iniciarNivel(4)">Nivel 4: Experto</button>
+            </section>
+            <section id="ejercicio" style="display:none;">
+                <h2>Ejercicio</h2>
+                <div class="operation-container">
+                    <p id="pregunta"></p>
+                    <input type="number" id="respuesta" placeholder="Tu respuesta">
+                    <button onclick="verificarRespuesta()">Enviar</button>
+                </div>
+                <p id="resultado"></p>
+            </section>
+            <section id="historial">
+                <h2>Historial de Operaciones</h2>
+                <select id="historial-select" size="10">
+                    <!-- Las operaciones se añadirán aquí -->
+                </select>
+            </section>
+        </div>
     </main>
     <footer>
         <p><a href="index.html">Volver al Inicio</a></p>
