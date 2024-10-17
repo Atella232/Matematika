@@ -15,9 +15,8 @@ const historialSelect = document.getElementById('historial-select');
 function iniciarNivel(nivel) {
     nivelActual = nivel;
     nivelSection.style.display = 'none';
-    generarPregunta();
     ejercicioSection.style.display = 'block';
-    setTimeout(() => respuestaInput.focus(), 100); // Autoenfoque en el campo de respuesta
+    generarPregunta();
 }
 
 // Función para generar una nueva pregunta
@@ -60,16 +59,15 @@ function generarPregunta() {
                 b = getRandomInt(-10, 10);
                 operacion = '·';
                 expresion = `${formatNumber(a)} ${operacion} ${formatNumber(b)}`;
-                respuestaCorrecta = a * b;
+                respuestaCorrecta = calcular(a, b, operacion);
             } else {
                 // Divisiones como (-4) ÷ 2, asegurando que b no sea 0 y la división sea exacta
-                a = getRandomInt(-20, 20);
                 b = getRandomInt(1, 10); // Evitar división por 0
-                // Asegurar que a es divisible por b
-                a = b * getRandomInt(-10, 10);
+                let multiplicador = getRandomInt(-10, 10);
+                a = b * multiplicador; // Asegura que a es divisible por b
                 operacion = '÷';
                 expresion = `${formatNumber(a)} ${operacion} ${formatNumber(b)}`;
-                respuestaCorrecta = a / b;
+                respuestaCorrecta = calcular(a, b, operacion);
             }
             break;
         case 3:
@@ -85,13 +83,10 @@ function generarPregunta() {
             respuestaCorrecta = calcular(a, resultadoInterno, operacion);
             break;
         case 4:
-            // Nivel 4: Combinación de sumas, restas, multiplicaciones y divisiones
-            // Ejemplo: 2 · (5 - 3) + 3 -5 o 3 · 4 - (1 -5)
+            // Nivel 4: Combinación de sumas, restas, multiplicaciones y divisiones con resultados enteros
             const operaciones = ['+', '-', '·', '÷'];
             let numElements = getRandomInt(3, 5);
             expresion = '';
-            let resultadoTemp4 = 0;
-            let lastOp = '';
             let operadoresUsados = [];
 
             for (let i = 0; i < numElements; i++) {
@@ -102,24 +97,22 @@ function generarPregunta() {
                 if (Math.random() < 0.3 && i < numElements -1) { // 30% de probabilidad de añadir paréntesis
                     let num2 = getRandomInt(-10, 10);
                     let opInner = operaciones[getRandomInt(0, operaciones.length -1)];
-                    expresion += `${i === 0 ? '' : ' ' + op + ' '} (${formatNumber(num2)} ${opInner} ${formatNumber(getRandomInt(-10,10))})`;
-                    // Evaluar la expresión usando Function (asegurando seguridad)
-                    try {
-                        let evalExpr = expresion.replace(/÷/g, '/').replace(/·/g, '*');
-                        respuestaCorrecta = Function('"use strict";return (' + evalExpr + ')')();
-                    } catch {
-                        respuestaCorrecta = 0;
+                    // Asegurar que si la operación interna es división, el resultado sea entero
+                    if (opInner === '÷') {
+                        let bInner = getRandomInt(1, 10);
+                        let aInner = bInner * getRandomInt(-10, 10);
+                        operacionInner = '÷';
+                        expresion += `${i === 0 ? '' : ' ' + op + ' '} (${formatNumber(aInner)} ${operacionInner} ${formatNumber(bInner)})`;
+                        respuestaCorrecta = calcular(respuestaCorrecta, calcular(aInner, bInner, operacionInner), op);
+                    } else {
+                        expresion += `${i === 0 ? '' : ' ' + op + ' '} (${formatNumber(num2)} ${opInner} ${formatNumber(getRandomInt(-10,10))})`;
+                        let resultadoParentesis = calcular(num2, getRandomInt(-10,10), opInner);
+                        respuestaCorrecta = calcular(respuestaCorrecta, resultadoParentesis, op);
                     }
                 } else {
                     expresion += `${i === 0 ? '' : ' ' + op + ' '} ${formatNumber(num)}`;
+                    respuestaCorrecta = calcular(respuestaCorrecta, num, op);
                 }
-            }
-            // Evaluar la expresión
-            try {
-                let evalExpr = expresion.replace(/÷/g, '/').replace(/·/g, '*');
-                respuestaCorrecta = Function('"use strict";return (' + evalExpr + ')')();
-            } catch {
-                respuestaCorrecta = 0;
             }
             break;
         default:
@@ -161,6 +154,10 @@ function verificarRespuesta() {
     historial.push(`${preguntaActual.replace('= ?', '= ' + respuestaUsuario)} (${mensaje})`);
     actualizarHistorial();
 
+    // Limpiar el campo de respuesta y enfocar
+    respuestaInput.value = '';
+    respuestaInput.focus();
+
     // Generar una nueva pregunta después de 2 segundos
     setTimeout(generarPregunta, 2000);
 }
@@ -197,8 +194,6 @@ function calcular(a, b, op) {
             return a - b;
         case '·':
             return a * b;
-        case '×':
-            return a * b;
         case '÷':
             return a / b;
         default:
@@ -221,6 +216,13 @@ function volverNivel() {
     nivelSection.style.display = 'block';
     ejercicioSection.style.display = 'none';
 }
+
+// Función para manejar la tecla Enter en el campo de respuesta
+respuestaInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        verificarRespuesta();
+    }
+});
 
 // Autoenfoque en la caja de respuesta cuando la página se carga
 document.addEventListener("DOMContentLoaded", function() {
