@@ -213,4 +213,4 @@ function volverNivel() {
 // Función para manejar la tecla Enter en el campo de respuesta
 respuestaInput.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
-       verificarRespuesta()
+       verificarR
