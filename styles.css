@@ -120,6 +120,11 @@ button:hover {
     width: 30%;
 }
 
+.historial-container {
+    width: 100%;
+    overflow-x: auto; /* Añadido scroll horizontal */
+}
+
 #historial-select {
     width: 100%;
     height: 300px;
@@ -127,8 +132,10 @@ button:hover {
     border: 2px solid #4CAF50;
     border-radius: 5px;
     overflow-y: scroll;
+    overflow-x: auto; /* Añadido scroll horizontal */
     background-color: #ffffff;
     font-size: 16px; /* Aumentado el tamaño de fuente */
+    white-space: nowrap; /* Evita el salto de línea */
 }
 
 /* Estilos para los Botones Adicionales */
@@ -139,6 +146,7 @@ button:hover {
     gap: 10px;
 }
 
+/* Responsividad */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
